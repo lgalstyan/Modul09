@@ -1,4 +1,4 @@
-NAME    = easyfind
+NAME    = bts
 SRCS    = $(shell find . -name "*.cpp")
 OBJS 	= ${SRCS:.cpp=.o}
 CXXFLAGS   = -Wall -Wextra -Werror -std=c++98
