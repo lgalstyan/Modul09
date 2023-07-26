@@ -21,15 +21,16 @@ class Bitcoin
         Bitcoin& operator=(const Bitcoin& );
         ~Bitcoin();
     
-        void takeData(const std::string& ); // read each line and call parsDate for each line
+        void takeInputData(const std::string& ); // read each line and call parsDate for each line
+        void takeDatabase(const std::string& ); // read each line and call parsDate for each line
     
     private:
         std::map<std::string, float> _database; 
         std::map<std::string, float, errors> _inputData;
-        errors _err;
 
     private:
-        void parseData(std::string ); //parse line into => date(string): Year-Month-Day and value(float): 0 and 1000 //hendl error in this function using print
+        void parseInputData(std::string ); //parse line into => date(string): Year-Month-Day, value(float): 0 and 1000 //hendl error in this function using print, errors started with DEFAULT
+        void parseDataBase(std::string ); //parse line into => date(string): Year-Month-Day and value(float): 0 and 1000 //hendl error in this function using print
         void change_value(); //search for the closest date and returns the corresponding value
 
 };
