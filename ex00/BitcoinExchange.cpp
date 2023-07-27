@@ -94,26 +94,53 @@ bool Bitcoin::IsValidDate(const std::string &input)
 void Bitcoin::parseInputData(std::string &inp_str)
 {
     std::string part1;
+    std::string tmp_str;
     float part2;
-    errors tmp_err = DEFAULT;
 
     std::istringstream stream(inp_str);
     
-    std::getline(stream, part1, ',');
+    std::getline(stream, part1, '|');
     stream >> part2;
     if (stream.str().empty() || !IsValidDate(part1))
     {
-        tmp_err = BAD_INPUT;
+        tmp_str = part1;
+        part1 = "Error: bad input => " + tmp_str;
     }
     else if (part2 < 0)
     {
-        tmp_err = NOT_POSITIVE;
+        part1 = "Error: not a positive number.";
     }
     else if (part2 > 1000)
     {
-        tmp_err = TOO_LARGE;
+        part1 = "Error: too large a number.";
     }
-    _inputData.insert(std::make_pair(part1, part2, tmp_err));
+    _inputData.insert(std::make_pair(part1, part2));
+}
+
+bool Bitcoin::exact_value(std::map<std::string, float>::iterator &elem)
+{
+    std::map<std::string, float>::const_iterator it;
+    for (it = _database.begin(); it != _database.end(); ++it)
+    {
+        if (it->first == elem->first)
+        {
+            elem->second = it->second * elem->second;
+            return true;
+        }
+    }
+    return false;
+}
+
+void Bitcoin::change_value()
+{
+    std::map<std::string, float>::iterator it;
+    for (it = _inputData.begin(); it != _inputData.end(); ++it)
+    {
+        if (!exact_value(it))
+        {
+            _database.lower_bound(it->first);//need to check
+        }
+    }
 }
 
 const char* Bitcoin::ConvertFailedException::what() const throw()
