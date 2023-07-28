@@ -10,6 +10,7 @@ int main(int argc, char **argv)
     try
     {
         Bitcoin btc(argv[1]);
+        // btc.print();
     }
     catch(const std::exception& e)
     {

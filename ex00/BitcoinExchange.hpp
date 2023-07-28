@@ -20,6 +20,7 @@ class Bitcoin
         Bitcoin(const Bitcoin& );
         Bitcoin& operator=(const Bitcoin& );
         ~Bitcoin();
+        void print();
 
     private:
         std::map<std::string, float> _inputData;
@@ -33,6 +34,7 @@ class Bitcoin
         void change_value(); //search for the closest date and returns the corresponding value
         bool IsValidDate(const std::string &);
         bool exact_value(std::map<std::string, float>::iterator& ); //if exact value is exist return true and change _inputData map value, else if dosnt exist return false;
+        std::map<std::string, float>::iterator checkLow(std::map<std::string, float>::iterator iter)
 
         class ConvertFailedException : std::exception
         {
