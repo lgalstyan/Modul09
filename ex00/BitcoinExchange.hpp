@@ -36,7 +36,7 @@ class Bitcoin
         void change_value(); //search for the closest date and returns the corresponding value
         bool IsValidDate(int year, int month, int day);
         bool isLeapYear(int year);
-        bool exact_value(std::map<int, float>::iterator& ); //if exact value is exist return true and change _inputData map value, else if dosnt exist return false;
+        float exact_value(std::map<int, float>::iterator& ); //if exact value is exist return true and change _inputData map value, else if dosnt exist return false;
         std::map<int, float>::iterator checkLow(std::map<int, float>::iterator iter);
         int toInt(std::istringstream& );
 

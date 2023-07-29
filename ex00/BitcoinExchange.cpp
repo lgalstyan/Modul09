@@ -162,18 +162,17 @@ void Bitcoin::parseInputData(std::string &inp_str)
     _inputData.insert(std::make_pair(idate, part2));
 }
 
-bool Bitcoin::exact_value(std::map<int, float>::iterator &elem)
+float Bitcoin::exact_value(std::map<int, float>::iterator &elem)
 {
     std::map<int, float>::const_iterator itdb;
     for (itdb = _database.begin(); itdb != _database.end(); ++itdb)
     {
         if (itdb->first == elem->first)
         {
-            // elem->second = itdb->second * elem->second;
-            return true;
+            return itdb->second;
         }
     }
-    return false;
+    return (-1.0f);
 }
 
 std::map<int, float>::iterator Bitcoin::checkLow(std::map<int, float>::iterator iter)
@@ -188,7 +187,7 @@ std::map<int, float>::iterator Bitcoin::checkLow(std::map<int, float>::iterator 
 // std::cout << "aaaaaaaaa\n" ;
 void Bitcoin::change_value()
 {
-    float new_val = 0.0f;
+    float res_val = 0.0f;
     std::string res_str = "";
 
     std::map<int, float>::iterator it;
@@ -206,33 +205,45 @@ void Bitcoin::change_value()
         {
             res_str = "Error: too large a number.";
         }
-        // std::cout << it->first << " => " << it->second << " = " ;
-        if (exact_value(it))
-        {
-            std::map<int, float>::const_iterator itdb;
-            for (itdb = _database.begin(); itdb != _database.end(); ++itdb)
-            {
-                if (itdb->first == it->first)
-                {
-                    // new_val = itdb->second * it->second;
-                    break;
-                }
-            }
-        }
         else
         {
-            std::map<std::string, float>::const_iterator itdb;
-            itdb = checkLow(it);
-            if (itdb == _database.begin())
+            res_val = exact_value(it);
+            if (res_val == -1.0f)
             {
-                std::cout << "No lower date found in the database." << std::endl;
+                // chi gtnvel petq e ptrel aveli poqr amsativy.
             }
             else
             {
-                new_val = it->second * itdb->second;
+                res_val *= it->second;
+                // veradarcrac arjeqy push_back() anel _resultDate map_um
             }
         }
-        std::cout << new_val << std::endl;
+        // else if (exact_value(it))
+        // {
+        //     std::map<int, float>::const_iterator itdb;
+        //     for (itdb = _database.begin(); itdb != _database.end(); ++itdb)
+        //     {
+        //         if (itdb->first == it->first)
+        //         {
+        //             // new_val = itdb->second * it->second;
+        //             break;
+        //         }
+        //     }
+        // }
+        // else
+        // {
+        //     std::map<std::string, float>::const_iterator itdb;
+        //     itdb = checkLow(it);
+        //     if (itdb == _database.begin())
+        //     {
+        //         std::cout << "No lower date found in the database." << std::endl;
+        //     }
+        //     else
+        //     {
+        //         new_val = it->second * itdb->second;
+        //     }
+        // }
+        // std::cout << new_val << std::endl;
     }
 }
 
