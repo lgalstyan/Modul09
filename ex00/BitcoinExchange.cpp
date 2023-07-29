@@ -66,9 +66,29 @@ void Bitcoin::takeDatabase()
     }
 }
 
+int Bitcoin::toInt(std::istringstream& str)
+{
+    int result = 0;
+    std::string year;
+    std::string month;
+    std::string day;
+    std::getline(str, year, '-');
+    std::getline(str, month, '-');
+    std::getline(str, day, '-');
+    int iyear = atoi(year.c_str());
+    int imonth = atoi(month.c_str());
+    int iday = atoi(day.c_str());
+    //2009-01-11,0
+    if (!IsValidDate(iyear, imonth, iday))
+        return (0);
+    result = iyear * 10000 + imonth * 100 + iday;
+    return result;
+}
+
 void Bitcoin::parseDataBase(std::string &inp_str)
 {
     std::string part1;
+    int tmp = 0;
     float part2;
 
     std::istringstream stream(inp_str);
@@ -76,23 +96,37 @@ void Bitcoin::parseDataBase(std::string &inp_str)
     std::getline(stream, part1, ',');
     stream >> part2;
     if (stream.fail())
-    {
         throw ConvertFailedException(); 
-    }
-    _database.insert(std::make_pair(part1, part2));
+
+    std::istringstream tmp_stream(part1);
+
+    tmp = toInt(tmp_stream);
+    if (tmp == 0)
+        std::cout << "Error: bad database => " << inp_str; 
+    _database.insert(std::make_pair(tmp, part2));
 }
 
-bool Bitcoin::IsValidDate(const std::string &input)
-{
-    //USING CHATGPT must check
-        // std::cout << "aaaaaaaaa  " << input <<std::endl;
+bool Bitcoin::isLeapYear(int year) {
+    return ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0));
+}
 
-    //check if form is correct Year-Month-Day
-    int year, month, day;
-    int result = std::sscanf(input.c_str(), "%d-%d-%d", &year, &month, &day);
-    if (month > 12 || month < 1 || day > 31 || day < 1)
+bool Bitcoin::IsValidDate(int year, int month, int day)
+{
+    if (year < 0 || month < 1 || month > 12 || day < 1 || day > 31) {
         return false;
-    return (result == 3);
+    }
+
+    static const int daysInMonth[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    int maxDays = daysInMonth[month];
+    
+    if (month == 2 && isLeapYear(year)) {
+        maxDays = 29;
+    }
+
+    if (day > maxDays) {
+        return false;
+    }
+    return true;
 }
 
 void Bitcoin::parseInputData(std::string &inp_str)
@@ -100,32 +134,37 @@ void Bitcoin::parseInputData(std::string &inp_str)
     std::string part1;
     std::string tmp_str;
     float part2 = 0.0f;
+    int idate;
 
     std::istringstream stream(inp_str);
     
     if(std::getline(stream, part1, '|'))
         stream >> part2;
     
-    if (stream.str().empty() || !IsValidDate(part1))
-    {
-        tmp_str = part1;
-        part1 = "Error: bad input => " + tmp_str + "\n";
-    }
-    else if (part2 < 0)
-    {
-        part1 = "Error: not a positive number.";
-    }
-    else if (part2 > 1000)
-    {
-        part1 = "Error: too large a number.";
-    }
-        // std::cout << "data " << part1 << " value " << part2 <<std::endl;
-    _inputData.insert(std::make_pair(part1, part2));
+    std::istringstream tmp_stream(part1);
+
+    idate = toInt(tmp_stream);
+
+    // if (stream.str().empty() || idate == 0)
+    // {
+    //     tmp_str = part1;
+    //     part1 = "Error: bad input => " + tmp_str + "\n";
+    // }
+    // else if (part2 < 0)
+    // {
+    //     part1 = "Error: not a positive number.";
+    // }
+    // else if (part2 > 1000)
+    // {
+    //     part1 = "Error: too large a number.";
+    // }
+    // std::cout << "data " << part1 << " value " << part2 <<std::endl;
+    _inputData.insert(std::make_pair(idate, part2));
 }
 
-bool Bitcoin::exact_value(std::map<std::string, float>::iterator &elem)
+bool Bitcoin::exact_value(std::map<int, float>::iterator &elem)
 {
-    std::map<std::string, float>::const_iterator itdb;
+    std::map<int, float>::const_iterator itdb;
     for (itdb = _database.begin(); itdb != _database.end(); ++itdb)
     {
         if (itdb->first == elem->first)
@@ -137,28 +176,45 @@ bool Bitcoin::exact_value(std::map<std::string, float>::iterator &elem)
     return false;
 }
 
-std::map<std::string, float>::iterator Bitcoin::checkLow(std::map<std::string, float>::iterator iter)
+std::map<int, float>::iterator Bitcoin::checkLow(std::map<int, float>::iterator iter)
 {
-    
+    std::map<int, float>::iterator it;
+    for(it = _database.begin(); it != _database.end(); ++it)
+    {
+
+    }
 }
 
 // std::cout << "aaaaaaaaa\n" ;
 void Bitcoin::change_value()
 {
     float new_val = 0.0f;
+    std::string res_str = "";
 
-    std::map<std::string, float>::iterator it;
+    std::map<int, float>::iterator it;
     for (it = _inputData.begin(); it != _inputData.end(); ++it)
     {
+        if (it->first == 0)
+        {
+            res_str = "Error: bad input => " + std::to_string(it->first) + "\n";
+        }
+        else if (it->second < 0)
+        {
+            res_str = "Error: not a positive number.";
+        }
+        else if (it->second > 1000)
+        {
+            res_str = "Error: too large a number.";
+        }
         // std::cout << it->first << " => " << it->second << " = " ;
         if (exact_value(it))
         {
-            std::map<std::string, float>::const_iterator itdb;
+            std::map<int, float>::const_iterator itdb;
             for (itdb = _database.begin(); itdb != _database.end(); ++itdb)
             {
                 if (itdb->first == it->first)
                 {
-                    new_val = itdb->second * it->second;
+                    // new_val = itdb->second * it->second;
                     break;
                 }
             }
