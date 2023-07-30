@@ -18,6 +18,7 @@ Bitcoin& Bitcoin::operator=(const Bitcoin& rhs)
     if (this != &rhs)
     {
         _database = rhs._database;
+        _fname = rhs._fname;
     }
     return *this;
 }
