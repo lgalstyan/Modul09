@@ -24,8 +24,8 @@ class Bitcoin
         void print();
 
     private:
-        std::map<int, float> _inputData;
         std::map<int, float> _database; 
+        std::map<int, float> _inputData;
         std::map<std::string, float> _resultDate; 
 
     private:

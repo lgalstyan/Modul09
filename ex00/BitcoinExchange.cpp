@@ -145,20 +145,8 @@ void Bitcoin::parseInputData(std::string &inp_str)
 
     idate = toInt(tmp_stream);
 
-    // if (stream.str().empty() || idate == 0)
-    // {
-    //     tmp_str = part1;
-    //     part1 = "Error: bad input => " + tmp_str + "\n";
-    // }
-    // else if (part2 < 0)
-    // {
-    //     part1 = "Error: not a positive number.";
-    // }
-    // else if (part2 > 1000)
-    // {
-    //     part1 = "Error: too large a number.";
-    // }
-    // std::cout << "data " << part1 << " value " << part2 <<std::endl;
+    std::cout << "in pars " << idate << " " << part2 << std::endl;
+
     _inputData.insert(std::make_pair(idate, part2));
 }
 
@@ -178,10 +166,12 @@ float Bitcoin::exact_value(std::map<int, float>::iterator &elem)
 std::map<int, float>::iterator Bitcoin::checkLow(std::map<int, float>::iterator iter)
 {
     std::map<int, float>::iterator it;
+    std::cout << iter->first << " " << iter->second << std::endl;
     for(it = _database.begin(); it != _database.end(); ++it)
     {
-
+        std::cout << it->first << " " << it->second << std::endl;
     }
+    return _database.end();
 }
 
 // std::cout << "aaaaaaaaa\n" ;
@@ -210,51 +200,28 @@ void Bitcoin::change_value()
             res_val = exact_value(it);
             if (res_val == -1.0f)
             {
+
                 // chi gtnvel petq e ptrel aveli poqr amsativy.
             }
             else
             {
+                res_str = it->first;
                 res_val *= it->second;
+                _resultDate.insert(std::make_pair(res_str, res_val));
                 // veradarcrac arjeqy push_back() anel _resultDate map_um
             }
         }
-        // else if (exact_value(it))
-        // {
-        //     std::map<int, float>::const_iterator itdb;
-        //     for (itdb = _database.begin(); itdb != _database.end(); ++itdb)
-        //     {
-        //         if (itdb->first == it->first)
-        //         {
-        //             // new_val = itdb->second * it->second;
-        //             break;
-        //         }
-        //     }
-        // }
-        // else
-        // {
-        //     std::map<std::string, float>::const_iterator itdb;
-        //     itdb = checkLow(it);
-        //     if (itdb == _database.begin())
-        //     {
-        //         std::cout << "No lower date found in the database." << std::endl;
-        //     }
-        //     else
-        //     {
-        //         new_val = it->second * itdb->second;
-        //     }
-        // }
-        // std::cout << new_val << std::endl;
     }
 }
 
 void Bitcoin::print()
 {
-    std::map<std::string, float>::iterator it;
+    std::map<int, float>::iterator it;
     for (it = _inputData.begin(); it != _inputData.end(); ++it)
     {
-        if (it->first[0] == 'E')
-            std::cout << it->first ;
-        else
+        // if (it->first[0] == 'E')
+        //     std::cout << it->first ;
+        // else
         {
             std::cout << it->first << " => " << it->second << std::endl;
         }
