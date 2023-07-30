@@ -4,7 +4,8 @@ RPN::RPN() : _input("unknown"){}
 
 RPN::RPN(char *inp)
 {
-    std::string _input(inp);
+    std::string input(inp);
+    _input = input;
 }
 
 RPN::RPN(const RPN &other)
@@ -16,7 +17,7 @@ RPN& RPN::operator=(const RPN &rhs)
 {
     if (this != &rhs)
     {
-        _memStack = rhs._memStack;
+        _mainStack = rhs._mainStack;
         _input = rhs._input;
     }
     return *this;
@@ -53,38 +54,80 @@ bool RPN::is_operator(std::string::const_iterator it)
 void RPN::fillstacks()
 {
     std::string::const_iterator it;
-    int res_print = 0;
+    int res_print;
     for (it = _input.begin(); it != _input.end(); ++it)
     {
-        if (std::isspace(static_cast<unsigned char>(*it)) && it + 1 != _input.end())
-            ++it;
+        // std::cout << BLUE << "it is : " << *it << RESET << std::endl;
+        if (std::isspace(static_cast<unsigned char>(*it)))
+        {
+            // std::cout << RED << "heyo " <<  *it << std::endl << RESET;
+            continue;
+        }
         else if (is_valid_number(it))
-            _memStack.push(static_cast<int>(*it));
+        {
+            _mainStack.push(*it - '0');
+        }
         else if (is_operator(it))
         {
-            int val1 = _memStack.top();
-            _memStack.pop();
-            int val2 = _memStack.top();
-            _memStack.pop();
+            int val1;
+            int val2;
+            if (!_mainStack.empty())
+            {
+                val1 = _mainStack.top();
+                _mainStack.pop();
+            }
+            else
+            {
+                std::cout << RED << "❌Error : invalid input!\n" << RESET;
+                return ;
+            }
+            if (!_mainStack.empty())
+            {
+                val2 = _mainStack.top();
+                _mainStack.pop();
+            }
+            else
+            {
+                std::cout << RED << "❌Error : invalid input!\n" << RESET;
+                return ;
+            }
+            // std::cout << val1 << ' ' << val2 << std::endl;
             switch (*it)
             {
             case '+':
-                _memStack.push(val2 + val1);
+                _mainStack.push(val2 + val1);
                 break;
             case '-':
-                _memStack.push(val2 - val1);
+                _mainStack.push(val2 - val1);
                 break;
             case '*':
-                _memStack.push(val2 * val1);
+                _mainStack.push(val2 * val1);
                 break;
             case '/':
-                _memStack.push(val2 / val1);
+                _mainStack.push(val2 / val1);
                 break;
             }
         }
         else
+        {
             std::cout << RED << "❌Error : invalid number"  << RESET << std::endl;
+            return ;
+        }
     }
-    std::cout << BLUE << "Result is: " << res_print << std::endl << RESET;
+    if (!_mainStack.empty())
+    {
+        res_print = _mainStack.top();
+        // std::cout  << res_print << std::endl ;
+        _mainStack.pop();
+    }
+    else
+    {
+        std::cout << RED << "❌Error : invalid input!\n" << RESET;
+        return ;
+    }
+    if (_mainStack.empty())
+        std::cout << GREEN << "Result is: " << res_print << std::endl << RESET;
+    else
+        std::cout << RED << "❌Error : invalid input!\n" << RESET;
 }
 

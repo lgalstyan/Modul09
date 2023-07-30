@@ -21,7 +21,7 @@ class RPN
         void calculate();
 
     private:
-        std::stack<int> _memStack;
+        std::stack<int> _mainStack;
         std::string _input;
     
     private:
