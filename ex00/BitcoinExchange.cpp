@@ -5,8 +5,7 @@ Bitcoin::Bitcoin(){}
 Bitcoin::Bitcoin(const std::string& inp_fname)
 {
     takeDatabase();
-    takeInputData(inp_fname);
-    change_value();
+    _fname = inp_fname;
 }
 
 Bitcoin::Bitcoin(const Bitcoin& other)
@@ -19,32 +18,11 @@ Bitcoin& Bitcoin::operator=(const Bitcoin& rhs)
     if (this != &rhs)
     {
         _database = rhs._database;
-        _inputData = rhs._inputData;
     }
     return *this;
 }
 
 Bitcoin::~Bitcoin() {}
-    
-void Bitcoin::takeInputData(const std::string& fname)
-{
-    std::string strtmp;
-    std::ifstream file(fname);
-    if (!file)
-    {
-        std::cout << "Error: " << fname << " file not found\n";
-    }
-    std::getline(file, strtmp);
-    while (std::getline(file, strtmp))
-    {
-        if (!file.eof())
-        {
-            parseInputData(strtmp);
-        }
-        else
-            break;
-    }
-}
 
 void Bitcoin::takeDatabase()
 {
@@ -78,7 +56,6 @@ int Bitcoin::toInt(std::istringstream& str)
     int iyear = atoi(year.c_str());
     int imonth = atoi(month.c_str());
     int iday = atoi(day.c_str());
-    //2009-01-11,0
     if (!IsValidDate(iyear, imonth, iday))
         return (0);
     result = iyear * 10000 + imonth * 100 + iday;
@@ -129,104 +106,97 @@ bool Bitcoin::IsValidDate(int year, int month, int day)
     return true;
 }
 
+void Bitcoin::change_one_elem(const std::pair<int, float> &elem, const std::string &org_date)
+{  
+    float res_val = 1.0f;
+    std::string res_str = "";
+
+    if (elem.first == 0.0f)
+    {
+        std::cout << "Error: bad input => " << org_date << std::endl;
+        return ;
+    }
+    else if (elem.second < 0)
+    {
+        std::cout << "Error: not a positive number. " << std::endl;
+        return ;
+    }
+    else if (elem.second > 1000)
+    {
+        std::cout << "Error: too large a number." << std::endl;
+        return ;
+    }
+    else
+    {
+        std::pair<int, float> closest = checkLow(elem);
+        res_str = closest.first;
+        res_val = closest.second * elem.second;
+        std::cout << org_date << " => " << elem.second << " = "<< res_val << std::endl;
+    }
+}
+
+void Bitcoin::takeInputData(const std::string& fname)
+{
+    std::string strtmp;
+    std::ifstream file(fname);
+    if (!file)
+    {
+        std::cout << "Error: " << fname << " file not found\n";
+    }
+    std::getline(file, strtmp);
+    while (std::getline(file, strtmp))
+    {
+        parseInputData(strtmp);
+        if (file.eof())
+            break;
+    }
+}
+
 void Bitcoin::parseInputData(std::string &inp_str)
 {
     std::string part1;
     std::string tmp_str;
-    float part2 = 0.0f;
+    std::string tmp_part2;
+    float part2 = 0.0;
     int idate;
-
-    std::istringstream stream(inp_str);
-    
-    if(std::getline(stream, part1, '|'))
-        stream >> part2;
-    
-    std::istringstream tmp_stream(part1);
-
-    idate = toInt(tmp_stream);
-
-    std::cout << "in pars " << idate << " " << part2 << std::endl;
-
-    _inputData.insert(std::make_pair(idate, part2));
-}
-
-float Bitcoin::exact_value(std::map<int, float>::iterator &elem)
-{
-    std::map<int, float>::const_iterator itdb;
-    for (itdb = _database.begin(); itdb != _database.end(); ++itdb)
+    if (inp_str.find("|") == std::string::npos)
     {
-        if (itdb->first == elem->first)
-        {
-            return itdb->second;
-        }
+        std::cout << "Error: bad input => " << inp_str << std::endl;
     }
-    return (-1.0f);
-}
-
-std::map<int, float>::iterator Bitcoin::checkLow(std::map<int, float>::iterator iter)
-{
-    std::map<int, float>::iterator it;
-    std::cout << iter->first << " " << iter->second << std::endl;
-    for(it = _database.begin(); it != _database.end(); ++it)
+    else
     {
-        std::cout << it->first << " " << it->second << std::endl;
-    }
-    return _database.end();
-}
+        std::istringstream stream(inp_str);
 
-// std::cout << "aaaaaaaaa\n" ;
-void Bitcoin::change_value()
-{
-    float res_val = 0.0f;
-    std::string res_str = "";
+        if(std::getline(stream, part1, '|'))
+        {
+            stream >> tmp_part2;
+            part2 = static_cast<float>(atof(tmp_part2.c_str()));
+        }
+        std::istringstream tmp_stream(part1);
 
-    std::map<int, float>::iterator it;
-    for (it = _inputData.begin(); it != _inputData.end(); ++it)
-    {
-        if (it->first == 0)
-        {
-            res_str = "Error: bad input => " + std::to_string(it->first) + "\n";
-        }
-        else if (it->second < 0)
-        {
-            res_str = "Error: not a positive number.";
-        }
-        else if (it->second > 1000)
-        {
-            res_str = "Error: too large a number.";
-        }
-        else
-        {
-            res_val = exact_value(it);
-            if (res_val == -1.0f)
-            {
+        idate = toInt(tmp_stream);
 
-                // chi gtnvel petq e ptrel aveli poqr amsativy.
-            }
-            else
-            {
-                res_str = it->first;
-                res_val *= it->second;
-                _resultDate.insert(std::make_pair(res_str, res_val));
-                // veradarcrac arjeqy push_back() anel _resultDate map_um
-            }
-        }
+        change_one_elem(std::make_pair(idate, part2), part1);
     }
 }
 
-void Bitcoin::print()
+void Bitcoin::change()
 {
-    std::map<int, float>::iterator it;
-    for (it = _inputData.begin(); it != _inputData.end(); ++it)
+    takeInputData(_fname);
+
+}
+
+std::pair<int, float> Bitcoin::checkLow(const std::pair<int, float> &elem)
+{
+    std::map<int, float>::reverse_iterator it;
+    for(it = _database.rbegin(); it != _database.rend(); ++it)
     {
-        // if (it->first[0] == 'E')
-        //     std::cout << it->first ;
-        // else
+        if (it->first <= elem.first)
         {
-            std::cout << it->first << " => " << it->second << std::endl;
+            return std::make_pair(it->first, it->second);
         }
     }
-   
+    return std::make_pair(_database.begin()->first, _database.begin()->second);
 }
 
 const char* Bitcoin::ConvertFailedException::what() const throw()
