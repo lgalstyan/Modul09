@@ -7,6 +7,6 @@ int main(int argc, char **argv)
         std::cerr << RED << "Error: takes one parameter\n" << RESET;
         return (2);
     }
-    RPN calculator(argv[1]);
-    calculator.fillstack();
+    RPN cal(argv[1]);
+    cal.calculate();
 }

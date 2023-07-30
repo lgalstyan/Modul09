@@ -1,5 +1,5 @@
-#ifndef RPN
-#define RPN
+#ifndef RPN_HPP
+#define RPN_HPP
 
 #define RESET	"\033[0m"
 #define BLUE	"\033[1;34m"
@@ -7,21 +7,25 @@
 #define RED		"\033[31m"
 
 #include <iostream>
+#include <stack>
+#include <string>
 
 class RPN
 {
     public:
         RPN();
+        RPN(char *);
         RPN(const RPN &);
         RPN& operator=(const RPN &);
         ~RPN();
-        void fillstacks(std::string &line);
+        void calculate();
 
     private:
         std::stack<int> _memStack;
-        std::stack<int> _operStack;
+        std::string _input;
     
     private:
+        void fillstacks();
         bool is_operator(std::string::const_iterator );
         bool is_valid_number(std::string::const_iterator );
 
