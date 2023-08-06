@@ -46,6 +46,20 @@ void PmergeMe::init(int argc, char **argv)
     std::cout << "Time to process a range of " << argc << " elements with std::list : " << (_t_list_finish - _t_list_start) / 1000 << " us\n";
 }
 
+bool PmergeMe::areAllDigits(const std::string& str)
+{
+    std::string::const_iterator it = str.begin();
+    if (*it == '+')
+        ++it;
+    for (; it != str.end(); ++it)
+    {
+        if (!isdigit(*it)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 int PmergeMe::check_num(char *num)
 {
     int res = -1;
@@ -57,34 +71,13 @@ int PmergeMe::check_num(char *num)
     std::getline(stream, str, ' ');
     std::istringstream convert(str);
     convert >> res;
+    if (stream.fail() || (res == 0 && str[0] != '0') || !areAllDigits(str))
+        return -1;
     if (stream.fail())
     {
         return -1;
-        // std::getline(stream1, str1, '\0');
-        // std::istringstream last_elem(str);
-        // last_elem >> res;
-        // if (stream.fail())
-        // {
-        //     return (-1);
-        // }
     }
     return res;
-    // // if (str.find_last_of("0123456789") != std::string::npos)
-    // // {
-    // //     return true;
-    // // }
-    // std::string::const_iterator it;
-    // it = str.begin();
-    // while (it != str.end() && std::isspace(static_cast<unsigned char>(*it)))
-    //     ++it;
-    // if (*it == '+')
-    //     ++it;
-    // while (std::isdigit(*it))
-    // {
-    //     res = res * 10 + (*it); 
-    //     ++it;
-    // }
-    // return res;
 }
 
 void PmergeMe::fill_list(int argc, char **argv)

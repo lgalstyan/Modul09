@@ -27,6 +27,7 @@ class PmergeMe
         void print_vect();
         void print_list();
         int check_num(char *);
+        bool areAllDigits(const std::string& );
     private:
         std::vector<int> _vect;
         std::list<int> _list;
