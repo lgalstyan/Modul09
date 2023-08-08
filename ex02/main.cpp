@@ -8,6 +8,6 @@ int main(int argc, char **argv)
         return (2);
     }
     PmergeMe sort;
-    sort.init(argc, argv);
+    sort.sorting(argc, argv);
     return 0;
 }

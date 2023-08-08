@@ -23,24 +23,30 @@ PmergeMe& PmergeMe::operator=(const PmergeMe& rhs)
 
 PmergeMe::~PmergeMe(){}
 
-void PmergeMe::init(int argc, char **argv)
+void PmergeMe::sorting(int argc, char **argv)
 {
+    std::cout << "Before: " ;
+    print_unsorted(argc, argv);
+    std::cout << std::endl;
+
     // for vector
     _t_vector_start = get_current_time(&_time);
     fill_vector(argc, argv);
     //TODO write sort using vector
-    print_vect();
-    std::cout << std::endl;
     _t_vector_finish = get_current_time(&_time);
 
 
     //for list
     _t_list_start = get_current_time(&_time);
     fill_list(argc, argv);
-    print_list();
-    std::cout << std::endl;
+    // print_list();
     // //TODO write sort using list
     _t_list_finish = get_current_time(&_time);
+
+    std::cout << "After: " ;
+    print_sorted();
+    std::cout << std::endl;
+
 
     std::cout << "Time to process a range of " << argc << " elements with std::vector : " << (_t_vector_finish - _t_vector_start) / 1000 << " us\n";
     std::cout << "Time to process a range of " << argc << " elements with std::list : " << (_t_list_finish - _t_list_start) / 1000 << " us\n";
@@ -114,21 +120,20 @@ void PmergeMe::fill_vector(int argc, char **argv)
     }
 }
 
-void PmergeMe::print_list()
+void PmergeMe::print_unsorted(int argc, char **argv)
 {
-    for (std::list<int>::const_iterator it = _list.begin(); it != _list.end(); ++it) {
-        std::cout << *it << " ";
+    for (int i = 1; i < argc; ++i)
+    {
+        std::cout << argv[i] << " ";
     }
 }
 
-void PmergeMe::print_vect()
+void PmergeMe::print_sorted()
 {
     for (std::vector<int>::const_iterator it = _vect.begin(); it != _vect.end(); ++it) {
         std::cout << *it << " ";
     }
 }
-
-// PmergeMe::
 
 double	get_current_time(struct timeval *time)
 {

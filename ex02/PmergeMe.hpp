@@ -20,12 +20,13 @@ class PmergeMe
         PmergeMe(const PmergeMe& );
         PmergeMe& operator=(const PmergeMe& );
         ~PmergeMe();
-        void init(int , char** );
+        void sorting(int , char** );
+        
+    private:
         void fill_list(int , char **);
         void fill_vector(int , char **);
-    private:
-        void print_vect();
-        void print_list();
+        void print_sorted();
+        void print_unsorted(int argc, char **argv);
         int check_num(char *);
         bool areAllDigits(const std::string& );
     private:
