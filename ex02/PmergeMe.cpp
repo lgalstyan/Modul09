@@ -13,6 +13,7 @@ PmergeMe& PmergeMe::operator=(const PmergeMe& rhs)
 	{
 		_vect = rhs._vect;
 		_deque = rhs._deque;
+		_time = rhs._time;
 		_t_vector_start = rhs._t_vector_start;
 		_t_vector_finish = rhs._t_vector_finish;
 		_t_deque_start = rhs._t_deque_start;
@@ -32,20 +33,19 @@ void PmergeMe::sorting(int argc, char **argv)
 	// for vector
 	_t_vector_start = get_current_time(&_time);
 	fill_vector(argc, argv);
-	sort_insertion(_vect);
+	mergeSort(_vect, 0, _vect.size() - 1);
 	_t_vector_finish = get_current_time(&_time);
 
 
-	// //for deque
-	// _t_deque_start = get_current_time(&_time);
-	// fill_deque(argc, argv);
-	// sort_insertion(_deque);
-	// _t_deque_finish = get_current_time(&_time);
+	//for deque
+	_t_deque_start = get_current_time(&_time);
+	fill_deque(argc, argv);
+	mergeSort(_deque, 0, _deque.size() - 1);
+	_t_deque_finish = get_current_time(&_time);
 
 	std::cout << "After: " ;
 	print_sorted();
 	std::cout << std::endl;
-
 
 	std::cout << "Time to process a range of " << argc << " elements with std::vector : " << (_t_vector_finish - _t_vector_start) / 1000 << " us\n";
 	std::cout << "Time to process a range of " << argc << " elements with std::deque : " << (_t_deque_finish - _t_deque_start) / 1000 << " us\n";
@@ -120,9 +120,9 @@ void PmergeMe::fill_vector(int argc, char **argv)
 
 void PmergeMe::print_unsorted(int argc, char **argv)
 {
-    if (argc > NUMBER_COUNT + 1)
+    if (argc > NUMBER_COUNT)
     {
-	    for (int i = 1; i < NUMBER_COUNT + 1; ++i)
+	    for (int i = 1; i < NUMBER_COUNT; ++i)
 	    {
 	    	std::cout << argv[i] << " ";
 	    }

@@ -23,11 +23,11 @@ class PmergeMe
 		PmergeMe& operator=(const PmergeMe& );
 		~PmergeMe();
 		void sorting(int , char** );
+		void print_sorted();
 
 	private:
 		void fill_deque(int , char **);
 		void fill_vector(int , char **);
-		void print_sorted();
 		void print_unsorted(int argc, char **argv);
 		int check_num(char *);
 		bool areAllDigits(const std::string& );
@@ -54,20 +54,19 @@ void print_vector(Data vec_deque)
 }
 
 template<typename Data>
-void sort_insertion(Data &vec_deque)
+void sort_insertion(Data &arr)
 {
-  typename Data::iterator it1, it2;
-
-	for (it1 = vec_deque.begin() + 1; it1 <= vec_deque.end(); ++it1)
-  {
-			int key = *it1;
-			it2 = it1;
-			while (it2 > vec_deque.begin() && key < *(it2 - 1))
-      {
-				*it2 = *(it2 - 1);
-				--it2;
-			}
-			*it2 = key;
+	typename Data::iterator it1, it2;
+	for (it1 = arr.begin() + 1; it1 < arr.end(); ++it1)
+	{
+		int key = *it1;
+		it2 = it1;
+		while (it2 > arr.begin() && key < *(it2 - 1))
+      	{
+			*it2 = *(it2 - 1);
+			--it2;
+		}
+		*it2 = key;
 	}
 }
 
@@ -77,8 +76,8 @@ void merge(Data &arr, int left, int midl, int right)
 	int n1 = midl - left + 1;
 	int n2 = right - midl;
 
-	Data L[n1];
-	Data M[n2];
+	Data L(n1);
+	Data M(n2);
 
 	for (int i = 0; i < n1; i++)
 		L[i] = arr[left + i];
@@ -92,7 +91,7 @@ void merge(Data &arr, int left, int midl, int right)
 	k = left;
 
 	while (i < n1 && j < n2)
-  {
+	{
 		if (L[i] < M[j]) {
 			arr[k] = L[i];
 			i++;
@@ -119,10 +118,13 @@ void merge(Data &arr, int left, int midl, int right)
 }
 
 template<typename Data>
-void mergeSort(Data &arr, int l, int r) {
+void mergeSort(Data &arr, int l, int r)
+{
 	if (r - l <= NUMBER_COUNT) {
-		insertionSort(arr.begin() + l, arr.begin() + r);
-	} else {
+		sort_insertion(arr);
+	} 
+	else
+	{
 		int m = l + (r - l) / 2;
 
 		mergeSort(arr, l, m);
