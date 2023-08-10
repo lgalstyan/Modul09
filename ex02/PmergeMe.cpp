@@ -91,7 +91,7 @@ void PmergeMe::fill_deque(int argc, char **argv)
 		int tmp = check_num(argv[i]);
 		if (tmp < 0)
 		{
-			std::cerr << RED << "❌Error : invalid input!\n" << RESET;
+			std::cout << RED << "❌Error : invalid input!\n" << RESET;
 			exit(1);
 		}   
 		else 
@@ -108,7 +108,7 @@ void PmergeMe::fill_vector(int argc, char **argv)
 		int tmp = check_num(argv[i]);
 		if (tmp < 0)
 		{
-			std::cerr << RED << "❌Error : invalid input!\n" << RESET;
+			std::cout << RED << "❌Error : invalid input!\n" << RESET;
 			exit(1);
 		}   
 		else 

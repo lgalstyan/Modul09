@@ -29,7 +29,7 @@ bool RPN::is_valid_number(std::string::const_iterator it)
 {
     if (std::isdigit(static_cast<unsigned char>(*it)) && static_cast<int>(*it) < 10)
     {
-        std::cerr << RED << "❌Error : argument will always be less than 10"  << RESET << std::endl;
+        std::cout << RED << "❌Error : argument will always be less than 10"  << RESET << std::endl;
         return false;
     }
     if (std::isdigit(static_cast<unsigned char>(*it)))
@@ -40,7 +40,7 @@ bool RPN::is_valid_number(std::string::const_iterator it)
 void RPN::calculate()
 {
     if (_input == "unknown")
-        std::cerr << RED << "Error: have not any parametr\n" << RESET;
+        std::cout << RED << "Error: have not any parametr\n" << RESET;
     fillstacks();
 }
 
@@ -78,7 +78,7 @@ void RPN::fillstacks()
             }
             else
             {
-                std::cerr << RED << "❌Error : invalid input!\n" << RESET;
+                std::cout << RED << "❌Error : invalid input!\n" << RESET;
                 return ;
             }
             if (!_mainStack.empty())
@@ -88,7 +88,7 @@ void RPN::fillstacks()
             }
             else
             {
-                std::cerr << RED << "❌Error : invalid input!\n" << RESET;
+                std::cout << RED << "❌Error : invalid input!\n" << RESET;
                 return ;
             }
             // std::cout << val1 << ' ' << val2 << std::endl;
@@ -110,7 +110,7 @@ void RPN::fillstacks()
         }
         else
         {
-            std::cerr << RED << "❌Error : invalid number"  << RESET << std::endl;
+            std::cout << RED << "❌Error : invalid number"  << RESET << std::endl;
             return ;
         }
     }
@@ -122,7 +122,7 @@ void RPN::fillstacks()
     }
     else
     {
-        std::cerr << RED << "❌Error : invalid input!\n" << RESET;
+        std::cout << RED << "❌Error : invalid input!\n" << RESET;
         return ;
     }
     if (_mainStack.empty())
