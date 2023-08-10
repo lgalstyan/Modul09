@@ -90,7 +90,7 @@ bool Bitcoin::isLeapYear(int year) {
 
 bool Bitcoin::IsValidDate(int year, int month, int day)
 {
-    if (year < 0 || month < 1 || month > 12 || day < 1 || day > 31) {
+    if (year < 2009 || year > 2023 || month < 1 || month > 12 || day < 1 || day > 31) {
         return false;
     }
 
