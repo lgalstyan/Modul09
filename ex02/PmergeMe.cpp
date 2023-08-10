@@ -51,7 +51,6 @@ void PmergeMe::sorting(int argc, char **argv)
     std::cout << "Time to process a range of " << argc << " elements with std::vector : " << (_t_vector_finish - _t_vector_start) / 1000 << " us\n";
     std::cout << "Time to process a range of " << argc << " elements with std::list : " << (_t_list_finish - _t_list_start) / 1000 << " us\n";
 }
-
 bool PmergeMe::areAllDigits(const std::string& str)
 {
     std::string::const_iterator it = str.begin();
