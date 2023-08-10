@@ -135,7 +135,6 @@ void PmergeMe::print_unsorted(int argc, char **argv)
 	    	std::cout << argv[i] << " ";
 	    }
     }
-
 }
 
 void PmergeMe::print_sorted()
