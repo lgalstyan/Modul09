@@ -33,7 +33,6 @@ void PmergeMe::sorting(int argc, char **argv)
 	_t_vector_start = get_current_time(&_time);
 	fill_vector(argc, argv);
 	sort_insertion(_vect);
-	//TODO write sort using vector
 	_t_vector_finish = get_current_time(&_time);
 
 
@@ -41,8 +40,6 @@ void PmergeMe::sorting(int argc, char **argv)
 	// _t_deque_start = get_current_time(&_time);
 	// fill_deque(argc, argv);
 	// sort_insertion(_deque);
-	// // print_deque();
-	// // //TODO write sort using deque
 	// _t_deque_finish = get_current_time(&_time);
 
 	std::cout << "After: " ;
@@ -123,9 +120,9 @@ void PmergeMe::fill_vector(int argc, char **argv)
 
 void PmergeMe::print_unsorted(int argc, char **argv)
 {
-    if (argc > LIMIT)
+    if (argc > NUMBER_COUNT + 1)
     {
-	    for (int i = 1; i < LIMIT; ++i)
+	    for (int i = 1; i < NUMBER_COUNT + 1; ++i)
 	    {
 	    	std::cout << argv[i] << " ";
 	    }
@@ -143,19 +140,22 @@ void PmergeMe::print_unsorted(int argc, char **argv)
 
 void PmergeMe::print_sorted()
 {
-    if (_vect.size() > LIMIT)
+    if (_vect.size() > NUMBER_COUNT)
     {
-        int ind;
         std::vector<int>::const_iterator it;
-	    for (ind = 0,  it = _vect.begin(); ind != LIMIT; ++it, ++ind)
+	    for (it = _vect.begin(); it < _vect.begin() + NUMBER_COUNT - 1; ++it)
         {
 	    	std::cout << *it << " ";
 	    }
         std::cout << "[...]";
     }
-	for (std::vector<int>::const_iterator it = _vect.begin(); it != _vect.end(); ++it) {
-		std::cout << *it << " ";
-	}
+    else
+    {
+	    for (std::vector<int>::const_iterator it = _vect.begin(); it != _vect.end(); ++it)
+        {
+	    	std::cout << *it << " ";
+	    }
+    }
 }
 
 double	PmergeMe::get_current_time(struct timeval *time)

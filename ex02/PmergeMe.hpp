@@ -5,7 +5,7 @@
 #define BLUE	"\033[1;34m"
 #define GREEN "\x1B[32m"
 #define RED		"\033[31m"
-#define LIMIT 5
+#define NUMBER_COUNT 5
 
 #include <iostream>
 #include <sstream>
@@ -120,7 +120,7 @@ void merge(Data &arr, int left, int midl, int right)
 
 template<typename Data>
 void mergeSort(Data &arr, int l, int r) {
-	if (r - l <= LIMIT) {
+	if (r - l <= NUMBER_COUNT) {
 		insertionSort(arr.begin() + l, arr.begin() + r);
 	} else {
 		int m = l + (r - l) / 2;
